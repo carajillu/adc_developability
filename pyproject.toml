@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "adc_developability"
+version = "2026.3"
+description = "Workflows used in the paper \"Something Something Developability of Antibody-Drug Conjugates\""
+authors = [{ name = "Joan Clark-Nicolas", email = "joan.clark-nicolas@strath.ac.uk" }]
+dependencies = [
+    "torch",
+    "transformers",
+    "redim",
+]
+
+[project.scripts]
+# command = "package.cli.script:main" # placeholder for entry point
