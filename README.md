@@ -21,7 +21,7 @@ source .venv/bin/activate # version will be whichever python version you have in
 ```
 ### .conda
 ```bash
-conda create --prefix $(pwd)/.conda python=3.14.3 # with conda you can specify version which might be handy
+conda create --prefix $(pwd)/.conda python=3.10 # with conda you can specify version which might be handy
 conda activate $(pwd)/.conda
 ```
 
