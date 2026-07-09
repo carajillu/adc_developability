@@ -16,7 +16,9 @@ dependencies = [
     "sentencepiece==0.2.1",
     "protobuf==3.20.3",
     "redim",
-    "anarci",
+    "anarci==2026.2.13.2",
+    "tqdm==4.68.3",
+    "antiberty"
 ]
 
 [project.scripts]
