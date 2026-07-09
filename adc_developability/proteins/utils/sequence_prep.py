@@ -3,7 +3,7 @@ from typing import Set
 from anarci import anarci
 
 # Global amino acid set (extend as needed)
-AA1LCODES: Set[str] = set("ACDEFGHIKLMNPQRSTVWYBXZJUO")
+AA1LCODES: Set[str] = set("ACDEFGHIKLMNPQRSTVWYBXZJUOB")
 
 def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad_char: str|None = "-") -> str:
     
