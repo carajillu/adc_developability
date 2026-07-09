@@ -18,7 +18,7 @@ dependencies = [
     "redim",
     "anarci==2026.2.13.2",
     "tqdm==4.68.3",
-    "antiberty"
+    "antiberty==0.1.3",
 ]
 
 [project.scripts]
