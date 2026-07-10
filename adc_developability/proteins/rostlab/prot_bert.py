@@ -10,7 +10,7 @@ def prot_bert_prep(sequence: str|list[str]) -> list[str]:
         sequence=[sequence]
     sequence=[seq.upper() for seq in sequence] # Upper case
     sequence=[" ".join(seq) for seq in sequence] # Separate by spaces
-    sequence = [re.sub(r"[UZOB]", "X", seq) for seq in sequence] # Replace rare AAs with X
+    sequence = [re.sub(r"[BXZJUO]", "X", seq) for seq in sequence] # Replace rare AAs with X
     return sequence
 
 def get_prot_bert_features(sequence: str|list[str]):
@@ -23,7 +23,7 @@ def get_prot_bert_features(sequence: str|list[str]):
     
 def get_prot_bert_df(sequence: str|list[str]):
     features=get_prot_bert_features(sequence)
-    df=pd.DataFrame(features[0].flatten().detach().numpy())
+    df=pd.DataFrame(features[0].flatten().detach().numpy()).transpose()
     df.columns=[f"prot_bert_{i}" for i in range(df.shape[1])]
     return df
 
@@ -62,6 +62,6 @@ def prot_bert_unmask(sequence:str|list[str],mask_fraction:float=0.15,seed:int=42
             row[f"score_{j}"] = pred["score"]
         unmasked_df.append(row)
     unmasked_df=pd.DataFrame(unmasked_df)
-    unmasked_df=pd.concat([df,unmasked_df])
+    unmasked_df=pd.concat([df,unmasked_df],axis=1)
     return unmasked_df
 
