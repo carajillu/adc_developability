@@ -13,8 +13,8 @@ def esm2_prep(sequence: str|list[str]) -> list[str]:
     return sequence
 
 def get_esm2_features(sequence: str|list[str]):
-    tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t12_35M_UR50D", do_lower_case=False)
-    model = EsmModel.from_pretrained("facebook/esm2_t12_35M_UR50D")
+    tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t33_650M_UR50D", do_lower_case=False)
+    model = EsmModel.from_pretrained("facebook/esm2_t33_650M_UR50D")
     sequence=esm2_prep(sequence)
     encoded_input = tokenizer(sequence, return_tensors='pt')
     output = model(**encoded_input)
@@ -45,8 +45,8 @@ def masker(seq_str: str, mask_fraction: float=0.15, seed: int=42) -> pd.DataFram
 
 
 def esm2_unmask(sequence:str|list[str],mask_fraction:float=0.15,seed:int=42):
-    tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t12_35M_UR50D", do_lower_case=False )
-    model = EsmForMaskedLM.from_pretrained("facebook/esm2_t12_35M_UR50D")
+    tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t33_650M_UR50D", do_lower_case=False )
+    model = EsmForMaskedLM.from_pretrained("facebook/esm2_t33_650M_UR50D")
     sequence=esm2_prep(sequence)
     df=masker(sequence[0],mask_fraction=mask_fraction,seed=seed)
     for i in range(1,len(sequence)):
