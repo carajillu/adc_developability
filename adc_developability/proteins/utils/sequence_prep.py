@@ -112,8 +112,13 @@ def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad
 
     # Constant region from original sequence
     constant_region = seq[seqend_index+1:]
-
-    return variable_region if variable else constant_region
+    
+    if variable:
+        assert len(variable_region)>0, f"Sequence:\n {sequence}\n does not seem to have a variable region"
+        return variable_region
+    else:
+        assert len(constant_region)>0, f"Sequence:\n {sequence}\n does not seem to have a constant region"
+        return constant_region
 
 def pad_sides(sequence: str, target_length: int, variable: bool = True, pad_char: str = "-") -> str:
     """
