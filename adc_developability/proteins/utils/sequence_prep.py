@@ -1,11 +1,14 @@
+import re
 import typing
+import numpy as np
 from typing import Set
 from anarci import anarci
+import re
 
 # Global amino acid set (extend as needed)
 AA1LCODES: Set[str] = set("ACDEFGHIKLMNPQRSTVWYBXZJUO")
 
-def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad_char: str|None = "-") -> str:
+def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad_char: str|None = "-", force: bool = False) -> str:
     
     """
     Extract the variable or constant region of an antibody sequence using
@@ -83,6 +86,10 @@ def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad
 
     # Validate sequence using global AA1LCODES
     if not seq or not all(residue in AA1LCODES for residue in seq):
+        #print the sequence and the offending characters for debugging
+        invalid_chars = set(seq) - AA1LCODES
+        print(f"Sequence:\n{sequence}\n contains invalid characters: {invalid_chars}")
+        print(f"Invalid characters in sequence: {invalid_chars}")
         raise ValueError("Sequence contains invalid amino acid characters.")
 
     # Run ANARCI
@@ -117,7 +124,14 @@ def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad
         assert len(variable_region)>0, f"Sequence:\n {sequence}\n does not seem to have a variable region"
         return variable_region
     else:
-        assert len(constant_region)>0, f"Sequence:\n {sequence}\n does not seem to have a constant region"
+        try:
+            assert len(constant_region)>0, f"Sequence:\n {sequence}\n does not seem to have a constant region"
+        except AssertionError as e:
+            if force:
+                print(f"Warning: {e}. Returning NaN for constant region.")
+                return np.nan
+            else:
+                raise e
         return constant_region
 
 def pad_sides(sequence: str, target_length: int, variable: bool = True, pad_char: str = "-") -> str:
@@ -162,3 +176,11 @@ def pad_sides(sequence: str, target_length: int, variable: bool = True, pad_char
         return padding + sequence
     else:
         return sequence + padding
+    
+def seq_prep(sequence: str|list[str]) -> list[str]:
+    if type(sequence)==str:
+        sequence=[sequence]
+    sequence=[seq.upper() for seq in sequence] # Upper case
+    sequence=[" ".join(seq) for seq in sequence] # Separate by spaces
+    sequence = [re.sub(r"[BXZJUO]", "X", seq) for seq in sequence] # Replace rare AAs with X (not sure if relevant for this model)
+    return sequence
