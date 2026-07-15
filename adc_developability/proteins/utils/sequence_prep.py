@@ -8,7 +8,7 @@ import re
 # Global amino acid set (extend as needed)
 AA1LCODES: Set[str] = set("ACDEFGHIKLMNPQRSTVWYBXZJUO")
 
-def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad_char: str|None = "-", force: bool = False) -> str:
+def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad_char: str|None = "-", force: bool = False) -> str|None:
     
     """
     Extract the variable or constant region of an antibody sequence using
@@ -128,8 +128,8 @@ def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad
             assert len(constant_region)>0, f"Sequence:\n {sequence}\n does not seem to have a constant region"
         except AssertionError as e:
             if force:
-                print(f"Warning: {e}. Returning NaN for constant region.")
-                return np.nan
+                print(f"Warning: {e}. Returning None for constant region.")
+                return None
             else:
                 raise e
         return constant_region
