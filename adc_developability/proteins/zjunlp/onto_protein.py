@@ -6,7 +6,9 @@ import pandas as pd
 
 TOKENIZER = BertTokenizer.from_pretrained("zjunlp/OntoProtein", do_lower_case=False)
 MODEL = BertModel.from_pretrained("zjunlp/OntoProtein")
+MODEL.eval()
 MODEL_MLM = BertForMaskedLM.from_pretrained("zjunlp/OntoProtein")
+MODEL_MLM.eval()
 PIPELINE = pipeline('fill-mask', model=MODEL_MLM, tokenizer=TOKENIZER)
 
 def get_onto_protein_df(sequence: str|list[str]):
