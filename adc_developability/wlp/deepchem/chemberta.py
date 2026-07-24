@@ -6,9 +6,9 @@ from transformers import pipeline
 from adc_developability.wlp.utils.features import featurizer
 import pandas as pd 
 
-TOKENIZER = RobertaTokenizer.from_pretrained("DeepChem/ChemBERTa-77M-MLM", do_lower_case=False)
-MODEL = RobertaModel.from_pretrained("DeepChem/ChemBERTa-77M-MLM")
-MODEL_MLM = RobertaForMaskedLM.from_pretrained("DeepChem/ChemBERTa-77M-MLM")
+TOKENIZER = RobertaTokenizer.from_pretrained("DeepChem/ChemBERTa-100M-MLM", do_lower_case=False)
+MODEL = RobertaModel.from_pretrained("DeepChem/ChemBERTa-100M-MLM")
+MODEL_MLM = RobertaForMaskedLM.from_pretrained("DeepChem/ChemBERTa-100M-MLM")
 PIPELINE = pipeline('fill-mask', model=MODEL_MLM, tokenizer=TOKENIZER)
 
 def get_chemberta_df(sequence: str|list[str]):
