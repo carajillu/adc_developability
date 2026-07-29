@@ -13,6 +13,6 @@ PIPELINE = pipeline('fill-mask', model=MODEL_MLM, tokenizer=TOKENIZER)
 
 def get_bert_base_smiles_df(sequence: str|list[str]):
     features=featurizer(sequence, TOKENIZER, MODEL)
-    df=pd.DataFrame(features[0].flatten().detach().numpy()).transpose()
+    df=pd.DataFrame([features[i].flatten().detach().numpy() for i in range(len(features))])
     df.columns=[f"bert_base_smiles_{i}" for i in range(df.shape[1])]
     return df
