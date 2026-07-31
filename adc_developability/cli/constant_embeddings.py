@@ -9,10 +9,6 @@ import argparse
 import pandas as pd
 
 from adc_developability.proteins.utils.sequence_prep import extract_region, pad_sides
-from adc_developability.proteins.facebook.esm2_t33_650M import get_esm2_df
-from adc_developability.proteins.zjunlp.onto_protein import get_onto_protein_df
-from adc_developability.proteins.rostlab.prot_bert import get_prot_bert_df
-from adc_developability.proteins.yarongef.distillprotbert import get_distill_prot_bert_df
 
 def parse():
     parser = argparse.ArgumentParser(description="ADC Developability Quality CLI")
@@ -35,7 +31,7 @@ if __name__=="__main__":
     if not args.debug:
        df=pd.read_csv(args.input)
     else:
-       df=pd.read_csv(args.input).head(1)
+       df=pd.read_csv(args.input).head(2)
     print(df)
 
     df["constant_region_LC"] = df[args.lightchain_key].apply(lambda x: extract_region(x, variable=False, force=True))
@@ -53,6 +49,8 @@ if __name__=="__main__":
 
     # Calculate embeddings
     if args.prot_bert:
+       
+       from adc_developability.proteins.rostlab.prot_bert import get_prot_bert_df
        embeddings_lc=get_prot_bert_df(sequence=df["constant_region_LC"])
        embeddings_hc=get_prot_bert_df(sequence=df["constant_region_HC"])
        embeddings_lc.columns=[f"prot_bert_lc_{i}" for i in range(embeddings_lc.shape[1])]
@@ -61,16 +59,8 @@ if __name__=="__main__":
        df_prot_bert.to_csv(f"prot_bert_{args.output}.csv",index=False)
        del(df_prot_bert)
 
-    if args.onto_protein:
-       embeddings_lc=get_onto_protein_df(sequence=df["constant_region_LC"])
-       embeddings_hc=get_onto_protein_df(sequence=df["constant_region_HC"])
-       embeddings_lc.columns=[f"onto_protein_lc_{i}" for i in range(embeddings_lc.shape[1])]
-       embeddings_hc.columns=[f"onto_protein_hc_{i}" for i in range(embeddings_hc.shape[1])]
-       df_onto_protein=pd.concat([df,embeddings_lc,embeddings_hc],axis=1)
-       df_onto_protein.to_csv(f"onto_protein_{args.output}.csv",index=False)
-       del(df_onto_protein)
-
     if args.distill_prot_bert:
+       from adc_developability.proteins.yarongef.distillprotbert import get_distill_prot_bert_df
        embeddings_lc=get_distill_prot_bert_df(sequence=df["constant_region_LC"])
        embeddings_hc=get_distill_prot_bert_df(sequence=df["constant_region_HC"])
        embeddings_lc.columns=[f"distill_prot_bert_lc_{i}" for i in range(embeddings_lc.shape[1])]
@@ -80,6 +70,7 @@ if __name__=="__main__":
        del(df_distill_prot_bert)
     
     if args.esm2:
+       from adc_developability.proteins.facebook.esm2_t33_650M import get_esm2_df
        embeddings_lc=get_esm2_df(sequence=df["constant_region_LC"])
        embeddings_hc=get_esm2_df(sequence=df["constant_region_HC"])
        embeddings_lc.columns=[f"esm2_lc_{i}" for i in range(embeddings_lc.shape[1])]
@@ -87,6 +78,16 @@ if __name__=="__main__":
        df_esm2=pd.concat([df,embeddings_lc,embeddings_hc],axis=1)
        df_esm2.to_csv(f"esm2_{args.output}.csv",index=False)
        del(df_esm2)
+
+    if args.onto_protein:
+       from adc_developability.proteins.zjunlp.onto_protein import get_onto_protein_df
+       embeddings_lc=get_onto_protein_df(sequence=df["constant_region_LC"])
+       embeddings_hc=get_onto_protein_df(sequence=df["constant_region_HC"])
+       embeddings_lc.columns=[f"onto_protein_lc_{i}" for i in range(embeddings_lc.shape[1])]
+       embeddings_hc.columns=[f"onto_protein_hc_{i}" for i in range(embeddings_hc.shape[1])]
+       df_onto_protein=pd.concat([df,embeddings_lc,embeddings_hc],axis=1)
+       df_onto_protein.to_csv(f"onto_protein_{args.output}.csv",index=False)
+       del(df_onto_protein)
 
 
 

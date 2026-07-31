@@ -11,7 +11,7 @@ PIPELINE = pipeline('fill-mask', model=MODEL_MLM, tokenizer=TOKENIZER)
 
 def get_esm2_df(sequence: str|list[str]):
     features=featurizer(sequence, TOKENIZER, MODEL)
-    df=pd.DataFrame(features[0].flatten().detach().numpy()).transpose()
+    df=pd.DataFrame([features[0][i].flatten().detach().numpy() for i in range(features[0].shape[0])])
     df.columns=[f"esm2_{i}" for i in range(df.shape[1])]
     return df
 
