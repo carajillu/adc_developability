@@ -90,7 +90,11 @@ def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad
         invalid_chars = set(seq) - AA1LCODES
         print(f"Sequence:\n{sequence}\n contains invalid characters: {invalid_chars}")
         print(f"Invalid characters in sequence: {invalid_chars}")
-        raise ValueError("Sequence contains invalid amino acid characters.")
+        if force:
+            print("Warning: Sequence contains invalid amino acid characters. Returning None.")
+            return None
+        else:
+            raise ValueError("Sequence contains invalid amino acid characters.")
 
     # Run ANARCI
     results, alignment_details, hit_tables = anarci(
@@ -98,7 +102,11 @@ def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad
     )
 
     if not results or not results[0]:
-        raise ValueError("Sequence could not be IMGT-numbered as an antibody.")
+        if force:
+            print("Warning: Sequence could not be IMGT-numbered as an antibody. Returning None.")
+            return None
+        else:
+            raise ValueError("Sequence could not be IMGT-numbered as an antibody.")
 
     #  domain
     domain_tuple = results[0][0]
