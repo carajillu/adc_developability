@@ -39,14 +39,6 @@ if __name__ == "__main__":
        df_chemberta.to_csv(f"chemberta_{args.output}.csv",index=False)
        del(df_chemberta)
 
-    if args.chembert_chembl:
-       from adc_developability.wlp.jonghyunlee.chembert_chembl import get_chembert_chembl_df
-       embeddings=get_chembert_chembl_df(sequence=df.adc_wlpsmiles.tolist())
-       embeddings.columns=[f"chembert_chembl_{i}" for i in range(embeddings.shape[1])]
-       df_chembert_chembl=pd.concat([df,embeddings],axis=1)
-       df_chembert_chembl.to_csv(f"chembert_chembl_{args.output}.csv",index=False)
-       del(df_chembert_chembl)
-
     if args.smiles_bert:
        from adc_developability.wlp.juim.smiles_bert import get_smiles_bert_df
        embeddings=get_smiles_bert_df(sequence=df.adc_wlpsmiles.tolist())
