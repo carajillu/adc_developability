@@ -8,7 +8,7 @@ This program calculates embeddings for antibody constant regions using the Prote
 import argparse
 import pandas as pd
 
-from adc_developability.proteins.utils.sequence_prep import extract_region, pad_sides
+from adc_developability.utils.sequence_prep import extract_region, pad_sides
 
 def parse():
     parser = argparse.ArgumentParser(description="ADC Developability Quality CLI")
