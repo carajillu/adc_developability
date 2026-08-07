@@ -17,13 +17,12 @@ This program assesses the performance of the Protein Language models used to des
 import argparse
 import pandas as pd
 import random
-from adc_developability.proteins.utils.sequence_prep import extract_region, pad_sides
-from adc_developability.proteins.utils.stat_metrics import evaluate_unmask_df
+from adc_developability.utils.sequence_prep import extract_region, pad_sides
+from adc_developability.utils.stat_metrics import evaluate_unmask_df
 from adc_developability.proteins.facebook.esm2_t33_650M import esm2_unmask
 from adc_developability.proteins.zjunlp.onto_protein import onto_protein_unmask
 from adc_developability.proteins.rostlab.prot_bert import prot_bert_unmask
 from adc_developability.proteins.yarongef.distillprotbert import distill_prot_bert_unmask
-from adc_developability.proteins.utils.stat_metrics import evaluate_unmask_df
 
 
 def parse_args():
@@ -34,12 +33,16 @@ def parse_args():
     parser.add_argument("--mask_fraction", type=float, default=0.15, help="Fraction of residues to mask for evaluation")
     parser.add_argument("--mask_seed", type=int, default=42, help="Seed for reproducible masking")
     parser.add_argument("--output", type=str, default="quality", help="Output file prefix (model name will be appended)")
+    parser.add_argument("--debug", action="store_true", help="Use only the first 10 rows of the dataset for debugging") 
     return parser.parse_args()
 
 if __name__=="__main__":
     args = parse_args()
+    DF_KEYS=[args.lightchain_key, args.heavychain_key]
     # Load the dataset
-    df=pd.read_csv(args.input)
+    df=pd.read_csv(args.input).dropna(subset=DF_KEYS).reset_index(drop=True)
+    if args.debug:
+        df=df.head(10)
 
     # Extract constant regions for light and heavy chains
     df["constant_region_LC"] = df[args.lightchain_key].apply(lambda x: extract_region(x, variable=False, force=True))
