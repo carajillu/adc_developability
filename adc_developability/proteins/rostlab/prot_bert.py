@@ -1,7 +1,7 @@
 from transformers import BertModel, BertTokenizer, BertForMaskedLM, pipeline
-from adc_developability.proteins.utils.sequence_prep import seq_prep
-from adc_developability.proteins.utils.masking import masker, unmasker
-from adc_developability.proteins.utils.features import featurizer
+from adc_developability.utils.sequence_prep import seq_prep
+from adc_developability.utils.masking import masker, unmasker
+from adc_developability.utils.features import featurizer
 import pandas as pd
 
 TOKENIZER = BertTokenizer.from_pretrained("Rostlab/prot_bert", do_lower_case=False)
@@ -10,8 +10,9 @@ MODEL_MLM = BertForMaskedLM.from_pretrained("Rostlab/prot_bert")
 PIPELINE = pipeline('fill-mask', model=MODEL_MLM, tokenizer=TOKENIZER)
 
 def get_prot_bert_df(sequence: str|list[str]):
+    sequence=seq_prep(sequence)
     features=featurizer(sequence, TOKENIZER, MODEL)
-    df=pd.DataFrame([features[0][i].flatten().detach().numpy() for i in range(features[0].shape[0])])
+    df=pd.DataFrame([features[i].flatten().detach().numpy() for i in range(len(features))])
     df.columns=[f"prot_bert_{i}" for i in range(df.shape[1])]
     return df
 

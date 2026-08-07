@@ -1,7 +1,7 @@
 from transformers import EsmModel, EsmTokenizer, EsmForMaskedLM, pipeline
-from adc_developability.proteins.utils.sequence_prep import seq_prep
-from adc_developability.proteins.utils.masking import masker, unmasker
-from adc_developability.proteins.utils.features import featurizer
+from adc_developability.utils.sequence_prep import seq_prep
+from adc_developability.utils.masking import masker, unmasker
+from adc_developability.utils.features import featurizer
 import pandas as pd
 
 TOKENIZER = EsmTokenizer.from_pretrained("facebook/esm2_t33_650M_UR50D", do_lower_case=False)
@@ -10,9 +10,10 @@ MODEL_MLM = EsmForMaskedLM.from_pretrained("facebook/esm2_t33_650M_UR50D")
 PIPELINE = pipeline('fill-mask', model=MODEL_MLM, tokenizer=TOKENIZER)
 
 def get_esm2_df(sequence: str|list[str]):
+    sequence=seq_prep(sequence)
     features=featurizer(sequence, TOKENIZER, MODEL)
-    df=pd.DataFrame([features[0][i].flatten().detach().numpy() for i in range(features[0].shape[0])])
-    df.columns=[f"esm2_{i}" for i in range(df.shape[1])]
+    df=pd.DataFrame([features[i].flatten().detach().numpy() for i in range(len(features))])
+    df.columns=[f"prot_bert_{i}" for i in range(df.shape[1])]
     return df
 
 def esm2_unmask(sequence:str|list[str],mask_fraction:float=0.15,seed:int=42):
