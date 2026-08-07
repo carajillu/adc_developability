@@ -3,7 +3,7 @@ from transformers import AutoTokenizer
 from transformers import AutoModelForMaskedLM
 from transformers import pipeline
 
-from adc_developability.wlp.utils.features import featurizer
+from adc_developability.utils.features import featurizer
 import pandas as pd 
 
 TOKENIZER = AutoTokenizer.from_pretrained("juIm/smiles_bert", do_lower_case=False)

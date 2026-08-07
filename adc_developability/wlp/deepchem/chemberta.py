@@ -3,7 +3,7 @@ from transformers import RobertaTokenizer
 from transformers import RobertaForMaskedLM
 from transformers import pipeline
 
-from adc_developability.wlp.utils.features import featurizer
+from adc_developability.utils.features import featurizer
 import pandas as pd 
 
 TOKENIZER = RobertaTokenizer.from_pretrained("DeepChem/ChemBERTa-100M-MLM", do_lower_case=False)

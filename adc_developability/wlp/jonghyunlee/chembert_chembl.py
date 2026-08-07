@@ -3,7 +3,7 @@ from transformers import PreTrainedTokenizerFast
 from transformers import AutoModelForMaskedLM
 from transformers import pipeline
 
-from adc_developability.wlp.utils.features import featurizer
+from adc_developability.utils.features import featurizer
 import pandas as pd 
 
 TOKENIZER = PreTrainedTokenizerFast.from_pretrained("jonghyunlee/chembert_chembl_pretrained", do_lower_case=False)
