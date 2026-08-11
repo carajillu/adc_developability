@@ -15,7 +15,7 @@ def get_antiberty_df(sequence: str|list[str]):
     embeddings_list=get_antiberty_embeddings(sequence)
     features=[]
     for element in embeddings_list:
-        features.append(element.flatten().detach().numpy())
+        features.append(element.mean(dim=0).detach().numpy())
     df=pd.DataFrame(features)
     df.columns=[f"AntiBERTy_{i}" for i in range(df.shape[1])]
     return df
