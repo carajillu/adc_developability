@@ -3,7 +3,7 @@ from transformers import RobertaTokenizer
 from transformers import RobertaForMaskedLM
 from transformers import pipeline
 
-from adc_developability.utils.features import featurizer
+from adc_developability.utils.features import count_tokens, featurizer
 import pandas as pd 
 
 TOKENIZER = RobertaTokenizer.from_pretrained("DeepChem/ChemBERTa-100M-MLM", do_lower_case=False)
@@ -16,3 +16,6 @@ def get_chemberta_df(sequence: str|list[str]):
     df=pd.DataFrame([features[i].flatten().detach().numpy() for i in range(len(features))])
     df.columns=[f"chemberta_{i}" for i in range(df.shape[1])]
     return df
+
+def chemberta_count_tokens(smiles_list):
+    return count_tokens(smiles_list, TOKENIZER)
