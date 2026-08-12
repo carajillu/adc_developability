@@ -5,14 +5,14 @@ import pandas as pd
 
 RUNNER = AntiBERTyRunner()
 
-def get_antiberty_embeddings(sequences: str|list[str]):
+def get_embeddings(sequences: str|list[str]):
     if type(sequences)==str:
         sequences=[sequences]
     embeddings = RUNNER.embed(sequences)
     return embeddings
 
-def get_antiberty_df(sequence: str|list[str]):
-    embeddings_list=get_antiberty_embeddings(sequence)
+def get_df(sequence: str|list[str]):
+    embeddings_list=get_embeddings(sequence)
     features=[]
     for element in embeddings_list:
         features.append(element.mean(dim=0).detach().numpy())

@@ -9,14 +9,14 @@ MODEL = BertModel.from_pretrained("Rostlab/prot_bert")
 MODEL_MLM = BertForMaskedLM.from_pretrained("Rostlab/prot_bert")
 PIPELINE = pipeline('fill-mask', model=MODEL_MLM, tokenizer=TOKENIZER)
 
-def get_prot_bert_df(sequence: str|list[str]):
+def get_df(sequence: str|list[str]):
     sequence=seq_prep(sequence)
     features=featurizer(sequence, TOKENIZER, MODEL)
     df=pd.DataFrame([features[i].flatten().detach().numpy() for i in range(len(features))])
     df.columns=[f"prot_bert_{i}" for i in range(df.shape[1])]
     return df
 
-def prot_bert_unmask(sequence:str|list[str],mask_fraction:float=0.15,seed:int=42):
+def unmask(sequence:str|list[str],mask_fraction:float=0.15,seed:int=42):
     sequence=seq_prep(sequence)
     masked=pd.concat([masker(sequence[i], mask_str="[MASK]", mask_fraction=mask_fraction, seed=seed) for i in range(0,len(sequence))],ignore_index=True)
     unmasked_df=unmasker(masked.masked_sequence.tolist(), PIPELINE)
