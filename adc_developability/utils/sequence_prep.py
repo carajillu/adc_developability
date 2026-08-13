@@ -8,7 +8,7 @@ import re
 # Global amino acid set (extend as needed)
 AA1LCODES: Set[str] = set("ACDEFGHIKLMNPQRSTVWYBXZJUO")
 
-def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad_char: str|None = "-", force: bool = False) -> str|None:
+def extract_region(sequence: str, scheme: str = "imgt", variable: bool = True, pad_char: str = "-", force: bool = False) -> str|None:
     
     """
     Extract the variable or constant region of an antibody sequence using
@@ -31,7 +31,7 @@ def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad
     ----------
     sequence : str
         Amino acid sequence of an antibody chain.
-    tool : str, optional
+    scheme : str, optional
         Must be "imgt". Any other value raises NotImplementedError.
     variable : bool, optional
         If True, returns the reconstructed variable region.
@@ -74,8 +74,8 @@ def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad
     Typical use cases include antibody sequence preprocessing, alignment-aware
     modelling, and IMGT-based region extraction workflows.
     """
-    if tool.lower() != "imgt":
-        raise NotImplementedError("Only IMGT-based extraction is implemented.")
+    #if scheme.lower() != "imgt":
+    #    raise NotImplementedError("Only IMGT-based extraction is implemented.")
 
     if anarci is None:
         raise ImportError(
@@ -83,6 +83,10 @@ def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad
         )
 
     seq = sequence.strip().upper()
+    if ";" in seq:
+        print(f"Warning: Sequence contains ';' character. This likely indicates a bispecific antibody. returning None.")
+        print(f"Sequence:\n{sequence}\n")
+        return None
 
     # Validate sequence using global AA1LCODES
     if not seq or not all(residue in AA1LCODES for residue in seq):
@@ -91,8 +95,8 @@ def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad
         print(f"Sequence:\n{sequence}\n contains invalid characters: {invalid_chars}")
         print(f"Invalid characters in sequence: {invalid_chars}")
         if force:
-            print("Warning: Sequence contains invalid amino acid characters. Returning None.")
-            return None
+            print(f"Warning: removing invalid characters {invalid_chars} from sequence: {sequence} ")
+            seq = "".join([residue if residue in AA1LCODES else "" for residue in seq])
         else:
             raise ValueError("Sequence contains invalid amino acid characters.")
 
@@ -129,7 +133,14 @@ def extract_region(sequence: str, tool: str = "imgt", variable: bool = True, pad
     constant_region = seq[seqend_index+1:]
     
     if variable:
-        assert len(variable_region)>0, f"Sequence:\n {sequence}\n does not seem to have a variable region"
+        try:
+           assert len(variable_region)>0, f"Sequence:\n {sequence}\n does not seem to have a variable region"
+        except AssertionError as e:
+            if force:
+                print(f"Warning: {e}. Returning None for variable region.")
+                return None
+            else:
+                raise e
         return variable_region
     else:
         try:
