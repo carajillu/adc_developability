@@ -1,7 +1,7 @@
 import torch
 
 def featurizer(sequence: str|list[str],tokenizer,model):
-    encoded_input = tokenizer(sequence, return_tensors='pt',padding=True)
+    encoded_input = tokenizer(sequence, return_tensors='pt',padding=False)
     with torch.no_grad():
         output = model(**encoded_input).last_hidden_state # shape: (batch_size, seq_len, hidden_size)
 
