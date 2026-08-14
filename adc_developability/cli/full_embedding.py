@@ -2,9 +2,9 @@ import argparse
 import pandas as pd
 import importlib
 import sys
-from adc_developability.utils.sequence_prep import extract_region, pad_sides, aligner
+from adc_developability.utils.sequence_prep import extract_region, pad_sides
 
-DF_KEYS=["adc_id","adc_status","antibody_HC","antibody_LC","linker_smiles","payload_smiles","adc_wlpsmiles","adc_meanDAR"]
+DF_KEYS=["adc_id","adc_status","antibody_HC","antibody_LC","adc_wlpsmiles","adc_meanDAR"]
 
 def parse():
     """
